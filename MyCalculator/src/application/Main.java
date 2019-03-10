@@ -141,7 +141,7 @@ public class Main extends Application {
    public void codeEqual(ActionEvent e) {
 
        String labelText = labelDisplay.getText();
-       String shuntedString,answer,lastChar;
+       String shuntedString,answer;
        int amountOfOperands = 0,amountOfOperators = 0;
          
        shuntedString = Shunter.postfix(labelText);
@@ -149,7 +149,6 @@ public class Main extends Application {
        for(String token:shuntedString.split("\\s")){
     	   if(token.matches("[+\\-\\*\\/]")) {
     		   amountOfOperators ++; 
-    		   lastChar = token;
     	   }else if(isNumeric(token)) {
     		   amountOfOperands ++; 
     	   }
