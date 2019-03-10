@@ -141,13 +141,12 @@ public class Main extends Application {
    public void codeEqual(ActionEvent e) {
 
        String labelText = labelDisplay.getText();
-       String lastNumb = getLastChar(labelText);
-       String test,test2,lastChar;
+       String shuntedString,answer,lastChar;
        int amountOfOperands = 0,amountOfOperators = 0;
          
-       test = Shunter.postfix(labelText);
-       System.out.println("Shunter Output: "+test);
-       for(String token:test.split("\\s")){
+       shuntedString = Shunter.postfix(labelText);
+
+       for(String token:shuntedString.split("\\s")){
     	   if(token.matches("[+\\-\\*\\/]")) {
     		   amountOfOperators ++; 
     		   lastChar = token;
@@ -156,12 +155,10 @@ public class Main extends Application {
     	   }
        }  
        
-	   System.out.println("amountOfOperands= "+amountOfOperands);
-	   System.out.println("amountOfOperators= "+amountOfOperators);
-	   System.out.println("isValid= "+isValid(test,rightCommaCounter,leftCommaCounter,amountOfOperands,amountOfOperators));
-       if(isValid(test,rightCommaCounter,leftCommaCounter,amountOfOperands,amountOfOperators)) {
-    	   test2 = Evaluator.RPNCalculation(test);
-    	   labelDisplay.setText(test2);
+       if(isValid(shuntedString,rightCommaCounter,leftCommaCounter,amountOfOperands,amountOfOperators)) {
+    	   answer = Evaluator.RPNCalculation(shuntedString);
+    	   labelDisplay.setText(answer);
+    	   labelError.setText("");
        } else {
     	   labelError.setText("Not valid");
        }
@@ -172,14 +169,18 @@ public class Main extends Application {
        String buttonString = ((Button)e.getSource()).getText();       
        String displayString = labelDisplay.getText();
        String lastNumb = "";
-       if(displayString != "") {
+       if (displayString.contentEquals("Infinity")) {
+    	   displayString = "";
+       }
+       
+       if(displayString.isEmpty() != true) {
            lastNumb = getLastChar(displayString);        
 	       if(lastNumb.matches("[+\\-\\*\\/]")) {
 	           displayString = displayString.substring(0, displayString.length() - 2);
 	           labelDisplay.setText(displayString+buttonString + " ");
 	       }else if(lastNumb.matches("[)]")) {
 	           labelDisplay.setText(displayString+ " " + buttonString + " ");
-	       }else if(lastNumb == "" || lastNumb.matches("[(]")) {
+	       }else if(lastNumb.isEmpty() == true || lastNumb.matches("[(]")) {
 	           //do nothing
 	       }else {
 	           labelDisplay.setText(displayString+ " " + buttonString + " ");
@@ -189,26 +190,21 @@ public class Main extends Application {
    public void codeBack(ActionEvent e) {
     
        String displayString = labelDisplay.getText();
-       if(displayString != null && displayString.length() > 0) {
-           //String lastChar = displayString.substring(displayString.length() - 1);
+       
+       if(displayString != null && displayString.isEmpty() != true) {
            String lastChar = getLastChar(displayString);
            System.out.println("LastChar: "+lastChar);
-           if(lastChar.contentEquals(" ")) {
-        	   System.out.println("matches 1 ");
-               displayString = displayString.substring(0, displayString.length() - 3);    
+           if(lastChar.contentEquals("Infinity")) {
+        	   displayString = "";    
            }else if(lastChar.contentEquals("(")){
-        	   System.out.println("matches 2 ");
                leftCommaCounter --;
                displayString = displayString.substring(0, displayString.length() - 3);     
            }else if(lastChar.contentEquals(")")){
-        	   System.out.println("matches 3 ");
                rightCommaCounter --;
                displayString = displayString.substring(0, displayString.length() - 3);  
            }else if(lastChar.matches("[+\\-\\*\\/]")){
-        	   System.out.println("matches 4 ");
         	   displayString = displayString.substring(0, displayString.length() - 3); 
            }else {
-        	   System.out.println("matches 5 ");
                displayString = displayString.substring(0, displayString.length() - 1);    
            }
            labelDisplay.setText(displayString);
@@ -226,11 +222,14 @@ public class Main extends Application {
        
        String buttonString = ((Button)e.getSource()).getText();       
        String displayString = labelDisplay.getText();
+       if (displayString.contentEquals("Infinity")) {
+    	   displayString = "";
+       }
        
        if(buttonString.contentEquals(".")) {
            
            String lastNumb = getLastChar(displayString);
-           if(lastNumb.matches("[+\\-\\*\\/\\,\\(\\)]") || lastNumb == "" || lastNumb.contains(".") ) {
+           if(lastNumb.matches("[+\\-\\*\\/\\,\\(\\)]") || lastNumb.isEmpty() == true || lastNumb.contains(".") ) {
              //Do nothing
            }else {
                labelDisplay.setText(displayString+buttonString);  
@@ -243,6 +242,9 @@ public class Main extends Application {
    public void codePar(ActionEvent e) {
        String buttonString = ((Button)e.getSource()).getText();       
        String displayString = labelDisplay.getText();
+       if (displayString.contentEquals("Infinity")) {
+    	   displayString = "";
+       }
            
        switch(buttonString) {
        case "(":

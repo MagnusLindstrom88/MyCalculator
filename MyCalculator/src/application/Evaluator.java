@@ -11,7 +11,6 @@ public class Evaluator {
 			String answer;
 			for(String token:expr.split("\\s")){
 				Double tokenNum = null;
-				System.out.println("token Eval: "+token);
 				try{
 					tokenNum = Double.parseDouble(token);
 				}catch(NumberFormatException e){}
@@ -34,7 +33,7 @@ public class Evaluator {
 					double firstOperand = stack.pop();
 					stack.push(firstOperand + secondOperand);
 				}else{
-					//System.out.println("Error");					
+					//Do nothing
 				}
 
 			}
