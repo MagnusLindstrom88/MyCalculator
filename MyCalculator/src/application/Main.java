@@ -139,10 +139,9 @@ public class Main extends Application {
 
        String labelText = labelDisplay.getText();
        String lastNumb = getLastChar(labelText);
-       String test,test2,test3;
+       String test,test2;
        int amountOfOperands = 0,amountOfOperators = 0;
-       
-
+         
        test = Shunter.postfix(labelText);
        System.out.println("Shunter Output: "+test);
        for(String token:test.split("\\s")){
