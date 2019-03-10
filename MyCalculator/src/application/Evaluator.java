@@ -5,13 +5,13 @@ import java.util.LinkedList;
 
 public class Evaluator {
 	
-		public static String RPNCalculation(String expr){
+		public static String RPNCalculation(String expr) {
 
 			Deque<Double> stack = new ArrayDeque<Double>();
 			String answer;
 			for(String token:expr.split("\\s")){
 				Double tokenNum = null;
-				System.out.println("token: "+token);
+				System.out.println("token Eval: "+token);
 				try{
 					tokenNum = Double.parseDouble(token);
 				}catch(NumberFormatException e){}
@@ -34,7 +34,7 @@ public class Evaluator {
 					double firstOperand = stack.pop();
 					stack.push(firstOperand + secondOperand);
 				}else{
-					System.out.println("Error");					
+					//System.out.println("Error");					
 				}
 
 			}
@@ -43,9 +43,7 @@ public class Evaluator {
 			if(answer.substring(answer.length()-2).contentEquals(".0") == true) {
 				answer = answer.substring(0, answer.indexOf("."));
 			}
-			return(answer);
-			
-			
+			return(answer);	
 		}
 		
 }

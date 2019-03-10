@@ -18,7 +18,7 @@ public class Main extends Application {
     Button button1,button2,button3,button4,button5,
     button6,button7,button8,button9,button0;
     Button buttonBack,buttonEqual,buttonClear,buttonComma,buttonPar1,buttonPar2;
-    Label labelDisplay;
+    Label labelDisplay, labelError;
     int leftCommaCounter = 0,rightCommaCounter = 0;
     
     public static void main(String[] args) {
@@ -51,33 +51,35 @@ public class Main extends Application {
        buttonEqual = new Button("=");
        
        labelDisplay = new Label("?");
+       labelError = new Label("");
        
        setWidths();
        attachCode();      
        GridPane layout = new GridPane();
        
        layout.setAlignment(Pos.CENTER);       
-       layout.add(labelDisplay, 0, 0, 4, 1);
-       layout.add(buttonBack, 0, 1);
-       layout.add(buttonPar1, 1, 1);
-       layout.add(buttonPar2, 2, 1);
-       layout.add(buttonDiv, 3, 1);
-       layout.add(button7, 0, 2);
-       layout.add(button8, 1, 2);
-       layout.add(button9, 2, 2);
-       layout.add(buttonMult, 3, 2);
-       layout.add(button4, 0, 3);
-       layout.add(button5, 1, 3);
-       layout.add(button6, 2, 3);
-       layout.add(buttonSub, 3, 3);
-       layout.add(button1, 0, 4);
-       layout.add(button2, 1, 4);
-       layout.add(button3, 2, 4);
-       layout.add(buttonAdd, 3, 4);
-       layout.add(buttonClear, 0, 5);
-       layout.add(button0, 1, 5);
-       layout.add(buttonComma, 2, 5);
-       layout.add(buttonEqual, 3, 5);
+       layout.add(labelError, 0, 0, 4, 1);
+       layout.add(labelDisplay, 0, 1, 4, 1);
+       layout.add(buttonBack, 0, 2);
+       layout.add(buttonPar1, 1, 2);
+       layout.add(buttonPar2, 2, 2);
+       layout.add(buttonDiv, 3, 2);
+       layout.add(button7, 0, 3);
+       layout.add(button8, 1, 3);
+       layout.add(button9, 2, 3);
+       layout.add(buttonMult, 3, 3);
+       layout.add(button4, 0, 4);
+       layout.add(button5, 1, 4);
+       layout.add(button6, 2, 4);
+       layout.add(buttonSub, 3, 4);
+       layout.add(button1, 0, 5);
+       layout.add(button2, 1, 5);
+       layout.add(button3, 2, 5);
+       layout.add(buttonAdd, 3, 5);
+       layout.add(buttonClear, 0, 6);
+       layout.add(button0, 1, 6);
+       layout.add(buttonComma, 2, 6);
+       layout.add(buttonEqual, 3, 6);
        
        labelDisplay.setText("");
        Scene scene = new Scene(layout,300, 250);
@@ -110,6 +112,7 @@ public class Main extends Application {
        buttonClear.setPrefWidth(50);
        buttonEqual.setPrefWidth(50);
        labelDisplay.setPrefWidth(200);
+       labelError.setPrefWidth(200);
     }   
    
    public void attachCode() {
@@ -139,25 +142,29 @@ public class Main extends Application {
 
        String labelText = labelDisplay.getText();
        String lastNumb = getLastChar(labelText);
-       String test,test2;
+       String test,test2,lastChar;
        int amountOfOperands = 0,amountOfOperators = 0;
          
        test = Shunter.postfix(labelText);
        System.out.println("Shunter Output: "+test);
        for(String token:test.split("\\s")){
-    	   //System.out.println("equal: "+token);
     	   if(token.matches("[+\\-\\*\\/]")) {
-    		   amountOfOperators ++;    		   
+    		   amountOfOperators ++; 
+    		   lastChar = token;
     	   }else if(isNumeric(token)) {
     		   amountOfOperands ++; 
     	   }
        }  
+       
 	   System.out.println("amountOfOperands= "+amountOfOperands);
 	   System.out.println("amountOfOperators= "+amountOfOperators);
-       if(amountOfOperands >= 2 && amountOfOperators >= 1) {
+	   System.out.println("isValid= "+isValid(test,rightCommaCounter,leftCommaCounter,amountOfOperands,amountOfOperators));
+       if(isValid(test,rightCommaCounter,leftCommaCounter,amountOfOperands,amountOfOperators)) {
     	   test2 = Evaluator.RPNCalculation(test);
     	   labelDisplay.setText(test2);
-       }          
+       } else {
+    	   labelError.setText("Not valid");
+       }
    }
    
    public void codeOperator(ActionEvent e) {
@@ -186,7 +193,6 @@ public class Main extends Application {
            //String lastChar = displayString.substring(displayString.length() - 1);
            String lastChar = getLastChar(displayString);
            System.out.println("LastChar: "+lastChar);
-           System.out.println("metod: "+getLastChar(displayString));
            if(lastChar.contentEquals(" ")) {
         	   System.out.println("matches 1 ");
                displayString = displayString.substring(0, displayString.length() - 3);    
@@ -212,6 +218,7 @@ public class Main extends Application {
    public void codeClear(ActionEvent e) {
 
        labelDisplay.setText("");
+       labelError.setText("");
        leftCommaCounter = 0;
        rightCommaCounter = 0;
    }
@@ -265,5 +272,16 @@ public class Main extends Application {
 	     return false;  
 	   }  
 	 }
+   
+   public static boolean isValid(String text, int right, int left, int operands,int operators ) {
+	   boolean isValid = false;
+
+	   if(right == left && operands - operators == 1 &&
+		  operands >= 2 && operators >= 1) {
+		   
+		isValid = true;   
+	   } 
+	   return isValid; 
+   }
    
 }

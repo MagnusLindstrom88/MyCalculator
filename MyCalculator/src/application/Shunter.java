@@ -17,18 +17,15 @@ public class Shunter {
         put("/", Operator.DIVIDE);
     }};
 
-    private static boolean isHigerPrec(String op, String sub)
-    {
+    private static boolean isHigerPrec(String op, String sub) {
         return (ops.containsKey(sub) && ops.get(sub).precedence >= ops.get(op).precedence);
     }
-
-    public static String postfix(String infix)
-    {
+    
+    public static String postfix(String infix) {
         StringBuilder output = new StringBuilder();
         Deque<String> stack  = new LinkedList<>();
-        //System.out.println(infix);
+
         for (String token : infix.split("\\s")) {
-        	System.out.println(token);
             if (ops.containsKey(token)) {
                 while ( ! stack.isEmpty() && isHigerPrec(token, stack.peek())) {
                 	output.append(stack.pop()).append(" ");
@@ -41,6 +38,8 @@ public class Shunter {
                 	output.append(stack.pop()).append(' ');
                     }
                 stack.pop();
+            }else if(token.isEmpty()) {
+            	//Do nothing
             }else {
                 output.append(token).append(" ");
             }
@@ -48,7 +47,7 @@ public class Shunter {
         while ( ! stack.isEmpty()) {
             output.append(stack.pop()).append(" ");
         }
-        //System.out.println("Shunter Output: "+output);
+
         return output.toString();
     }
 
